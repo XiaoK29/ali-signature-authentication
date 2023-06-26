@@ -43,6 +43,8 @@ func NewClient(appKey, appSecret string) *Client {
 		xCaSignatureMethod:  HmacSHA256,
 		xCaSignatureHeaders: "x-ca-timestamp,x-ca-key,x-ca-nonce,x-ca-signature-method",
 		resty:               resty.New(),
+		formData:            map[string]string{},
+		queryParams:         map[string]string{},
 	}
 }
 
@@ -83,7 +85,7 @@ func (c *Client) SetqueryParams(params map[string]string) *Client {
 }
 
 // SetqueryParam 设置单个参数
-func (c *Client) SetqueryParam(param, value string) *Client {
+func (c *Client) SetQueryParam(param, value string) *Client {
 	c.queryParams[param] = value
 	return c
 }
@@ -167,7 +169,7 @@ func (c *Client) getURLPath(urlStr string, httpMethod string) (string, error) {
 		return path, nil
 	}
 
-	path += path + "?" + params
+	path += "?" + params
 	return path, nil
 }
 
@@ -182,7 +184,7 @@ func (c *Client) setDefaultMultiField(url, httpMethod string) error {
 	}
 
 	signature := fmt.Sprintf(signatureStr,
-		http.MethodPost,
+		httpMethod,
 		c.accept,
 		c.contentType,
 		c.date,
@@ -192,6 +194,8 @@ func (c *Client) setDefaultMultiField(url, httpMethod string) error {
 		c.xCaTimestamp,
 		path,
 	)
+
+	fmt.Println(signature)
 
 	c.xCaSignature, err = c.genEncryptStr(signature)
 	if err != nil {
@@ -225,16 +229,12 @@ func (c *Client) GET(url string) (*resty.Response, error) {
 		resty = resty.SetResult(c.result)
 	}
 
-	if c.queryParams != nil {
+	if len(c.queryParams) > 0 {
 		resty.SetQueryParams(c.queryParams)
 	}
 
-	if c.formData != nil {
+	if len(c.formData) > 0 {
 		resty.SetFormData(c.formData)
-	}
-
-	if c.body != nil {
-		resty.SetBody(c.body)
 	}
 
 	return resty.Get(url)
@@ -263,11 +263,11 @@ func (c *Client) notGET(url, httpMethod string) (*resty.Request, error) {
 		resty = resty.SetResult(c.result)
 	}
 
-	if c.queryParams != nil {
+	if len(c.queryParams) > 0 {
 		resty.SetQueryParams(c.queryParams)
 	}
 
-	if c.formData != nil {
+	if len(c.formData) > 0 {
 		resty.SetFormData(c.formData)
 	}
 
