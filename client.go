@@ -69,11 +69,11 @@ func (c *Client) contex() context.Context {
 	return c.ctx
 }
 
-// SetXCaSignatureMethod 设置加密方式
-func (c *Client) SetXCaSignatureMethod(xCaSignatureMethod SignatureMethod) *Client {
-	c.xCaSignatureMethod = xCaSignatureMethod
-	return c
-}
+// SetXCaSignatureMethod 设置加密方式 目前不支持
+// func (c *Client) SetXCaSignatureMethod(xCaSignatureMethod SignatureMethod) *Client {
+// 	c.xCaSignatureMethod = xCaSignatureMethod
+// 	return c
+// }
 
 // SetqueryParams 批量设置参数
 func (c *Client) SetqueryParams(params map[string]string) *Client {
