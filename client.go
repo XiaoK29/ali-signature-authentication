@@ -195,8 +195,6 @@ func (c *Client) setDefaultMultiField(url, httpMethod string) error {
 		path,
 	)
 
-	fmt.Println(signature)
-
 	c.xCaSignature, err = c.genEncryptStr(signature)
 	if err != nil {
 		return err
