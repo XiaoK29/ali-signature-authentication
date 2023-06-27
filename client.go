@@ -75,8 +75,8 @@ func (c *Client) contex() context.Context {
 // 	return c
 // }
 
-// SetqueryParams 批量设置参数
-func (c *Client) SetqueryParams(params map[string]string) *Client {
+// SetQueryParams 批量设置参数
+func (c *Client) SetQueryParams(params map[string]string) *Client {
 	for p, v := range params {
 		c.queryParams[p] = v
 	}
