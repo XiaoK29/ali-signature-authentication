@@ -26,6 +26,7 @@ type Client struct {
 	xCaTimestamp        int64
 	xCaSignatureMethod  SignatureMethod
 	ctx                 context.Context
+	timeout             time.Duration
 	body                any               // post请求传入
 	result              any               // result
 	formData            map[string]string // formdata
@@ -42,10 +43,16 @@ func NewClient(appKey, appSecret string) *Client {
 		appSecret:           appSecret,
 		xCaSignatureMethod:  HmacSHA256,
 		xCaSignatureHeaders: "x-ca-timestamp,x-ca-key,x-ca-nonce,x-ca-signature-method",
-		resty:               resty.New(),
+		resty:               resty.New().SetTimeout(3 * time.Second),
 		formData:            map[string]string{},
 		queryParams:         map[string]string{},
 	}
+}
+
+// SetTimeout 设置超时时间
+func (c *Client) SetTimeout(timeout time.Duration) *Client {
+	c.timeout = timeout
+	return c
 }
 
 // SetResty 请求设置
