@@ -43,9 +43,10 @@ func NewClient(appKey, appSecret string) *Client {
 		appSecret:           appSecret,
 		xCaSignatureMethod:  HmacSHA256,
 		xCaSignatureHeaders: "x-ca-timestamp,x-ca-key,x-ca-nonce,x-ca-signature-method",
-		resty:               resty.New().SetTimeout(3 * time.Second),
+		resty:               resty.New(),
 		formData:            map[string]string{},
 		queryParams:         map[string]string{},
+		timeout:             3 * time.Second,
 	}
 }
 
@@ -217,7 +218,7 @@ func (c *Client) GET(url string) (*resty.Response, error) {
 		return nil, err
 	}
 
-	resty := c.resty.R().SetContext(c.contex())
+	resty := c.resty.SetTimeout(c.timeout).R().SetContext(c.contex())
 	resty.SetHeaders(map[string]string{
 		"accept":                 c.accept,
 		"content-type":           c.contentType,
@@ -252,7 +253,7 @@ func (c *Client) notGET(url, httpMethod string) (*resty.Request, error) {
 		return nil, err
 	}
 
-	resty := c.resty.R().SetContext(c.contex())
+	resty := c.resty.SetTimeout(c.timeout).R().SetContext(c.contex())
 	resty.SetHeaders(map[string]string{
 		"accept":                 c.accept,
 		"content-type":           c.contentType,
